@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
@@ -8,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -48,6 +50,15 @@ return Application::configure(basePath: dirname(__DIR__))
 
         });
 
+
+        $exceptions->render(function (InvalidArgumentException $e) {
+
+           
+            return response()->json(['error'=> $e->getMessage(), 'code' => $e->getCode()]);
+    
+        });
+
+
         $exceptions->render(function (AuthenticationException $e) {
 
             return response()->json(['error'=> 'Unauthenticated.', 'code' => 401], 401);
@@ -68,7 +79,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (HttpException $e) {
 
-            return response()->json(['error'=> $e->getMessage(), 'code' => $e->getCode()], $e->getCode());
+            return response()->json(['error'=> $e->getMessage(), 'code' => 422], 422);
     
         });
 

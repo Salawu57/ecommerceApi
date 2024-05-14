@@ -19,10 +19,7 @@ class BuyerSellerController extends ApiController
         ->pluck('product.seller')
         ->unique('id')
         ->values(); ///re-index the collection to avoid space inbtw the list
-
         return $this->showAll($sellers);
-
-
     }
 
    
