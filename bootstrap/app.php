@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\QueryException;
 use Illuminate\Auth\AuthenticationException;
@@ -51,12 +50,12 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
 
-        $exceptions->render(function (InvalidArgumentException $e) {
+        // $exceptions->render(function (InvalidArgumentException $e) {
 
            
-            return response()->json(['error'=> $e->getMessage(), 'code' => $e->getCode()]);
+        //     return response()->json(['error'=> $e->getMessage(), 'code' => $e->getCode()]);
     
-        });
+        // });
 
 
         $exceptions->render(function (AuthenticationException $e) {
