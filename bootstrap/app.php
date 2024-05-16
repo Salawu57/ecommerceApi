@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\QueryException;
+use App\Http\Middleware\SignatureMiddleware;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -24,7 +25,17 @@ return Application::configure(basePath: dirname(__DIR__))
         
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+           'signature' => SignatureMiddleware::class,
+        ]);
+
+        $middleware->web(append: [
+            'signature:X-Application-Name',
+        ]);
+
+        $middleware->api(append: [
+            'signature:X-Application-Name',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
 
