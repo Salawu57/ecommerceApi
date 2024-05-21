@@ -9,9 +9,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use App\Transformers\ProductTransformer;
 
 class ProductBuyerTransactionController extends ApiController
 {
+
+     public function __construct(){
+
+      parent::__construct();
+
+      $this->middleware('transaform.input:' . ProductTransformer::class)->only(['store']);
+
+    }
 
     public function store(Request $request, Product $product, User $buyer)
     {

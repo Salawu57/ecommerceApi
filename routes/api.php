@@ -48,7 +48,7 @@ Route::resource('sellers.products', SellerProductController::class)->except(['cr
 //product
 Route::resource('products', ProductController::class)->only(['index', 'show']);
 Route::resource('products.transactions', ProductTransactionController::class)->only(['index']);
-Route::resource('products.buyers', ProductBuyerController::class)->except(['index']);
+Route::resource('products.buyers', ProductBuyerController::class)->only(['index']);
 Route::resource('products.categories', ProductCategoryController::class)->only(['index','update', 'destroy']);
 Route::resource('products.buyers.transactions', ProductBuyerTransactionController::class)->only(['store']);
 

@@ -6,12 +6,15 @@ use App\Models\Seller;
 use App\Models\Category;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Model;
+use App\Transformers\ProductTransformer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
     use HasFactory, SoftDeletes; 
+
+    public $transformer = ProductTransformer::class;
     
     const AVAILABLE_PRODUCT = 'available';
     const UNAVAILABLE_PRODUCT = 'unavailable';

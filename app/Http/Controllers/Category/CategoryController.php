@@ -6,12 +6,35 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use App\Http\Middleware\TransformInput;
+use App\Transformers\CategoryTransformer;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class CategoryController extends ApiController
+class CategoryController extends ApiController implements HasMiddleware
 {
     /**
      * Display a listing of the resource.
      */
+
+    //  public function __construct(){
+
+    //     parent::__construct();
+  
+    //     $this->middleware('transaform.input:' . CategoryTransformer::class)->only(['store', 'update']);
+  
+    //   }
+
+      public static function middleware(): array
+      {
+          return [
+              new Middleware(TransformInput::class.':'.CategoryTransformer::class, only: ['store', 'update']),
+          ];
+      }
+
+      
+   
+
     public function index()
     {
         $categories = Category::all();

@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use App\Transformers\UserTransformer;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,6 +29,8 @@ class User extends Authenticatable
      const ADMIN_USER = 'true';
      const REGULAR_USER = 'false';
 
+     public $transformer = UserTransformer::class;
+     
     protected $dates = ['deleted_at'];
     protected $fillable = [
         'name',

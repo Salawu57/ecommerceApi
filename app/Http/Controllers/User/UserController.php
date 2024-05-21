@@ -7,6 +7,7 @@ use App\Mail\UserCreated;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use App\Transformers\UserTransformer;
 use App\Http\Controllers\ApiController;
 
 class UserController extends ApiController
@@ -14,6 +15,16 @@ class UserController extends ApiController
     /**
      * Display a listing of the resource.
      */
+
+    public function __construct(){
+
+      parent::__construct();
+
+      $this->middleware('transaform.input:' . UserTransformer::class)->only(['store', 'update']);
+
+    }
+    
+
     public function index()
     {
       $users = User::all();

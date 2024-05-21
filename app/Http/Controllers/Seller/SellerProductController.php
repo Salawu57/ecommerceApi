@@ -9,6 +9,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use App\Transformers\SellerTransformer;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -18,6 +19,17 @@ class SellerProductController extends ApiController
     /**
      * Display a listing of the resource.
      */
+
+
+     public function __construct(){
+
+        parent::__construct();
+  
+        $this->middleware('transaform.input:' . SellerTransformer::class)->only(['store', 'update']);
+  
+      }
+
+
     public function index(Seller $seller)
     {
        $products = $seller->products;

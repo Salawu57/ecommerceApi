@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\TransformInput;
 use Illuminate\Database\QueryException;
 use App\Http\Middleware\SignatureMiddleware;
 use Illuminate\Auth\AuthenticationException;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
            'signature' => SignatureMiddleware::class,
+           'transform.input' => TransformInput::class,
         ]);
 
         $middleware->web(append: [
