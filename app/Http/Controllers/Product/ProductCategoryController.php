@@ -7,12 +7,24 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class ProductCategoryController extends ApiController
+class ProductCategoryController extends ApiController implements HasMiddleware
 {
     /**
      * Display a listing of the resource.
-     */
+    */
+
+     public static function middleware(): array
+      {
+          return [
+              new Middleware('client.credentials', only: ['index']),
+              new Middleware('auth:api', except:['index']),
+          ];
+      }
+
+      
     public function index(Product $product)
     {
        $categories = $product->categories;

@@ -9,24 +9,34 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use App\Http\Middleware\TransformInput;
 use App\Transformers\SellerTransformer;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 
-class SellerProductController extends ApiController
+class SellerProductController extends ApiController implements HasMiddleware
 {
+
+    
+    public function __construct(){ 
+
+        self::middleware();
+    
+     }
+
+     
     /**
      * Display a listing of the resource.
      */
 
-
-     public function __construct(){
-
-        parent::__construct();
-  
-        $this->middleware('transaform.input:' . SellerTransformer::class)->only(['store', 'update']);
-  
+      public static function middleware(): array
+      {
+          return [
+             new Middleware(TransformInput::class.':'. SellerTransformer::class, only: ['store', 'update']),
+          ];
       }
 
 

@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Product;
 use App\Mail\UserCreated;
 use App\Mail\UserMailChange;
+use Laravel\Passport\Passport;
+use Symfony\Component\Clock\now;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
 
@@ -53,5 +55,15 @@ class AppServiceProvider extends ServiceProvider
             $product->save();
           }
         });
+
+        Passport::tokensExpireIn(now()->addMinutes(30));
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+       
+        Passport::tokensCan([
+          'purchase-product' => 'Create a new transaction for a specific product',
+          'manage-products' => 'Create, read, update, and delete products( CRUD)',
+          'manage-account' => 'Read your account data, id, name, email, if verified, and if admin (cannot read password). Modify your account data (email, and password). Cannot delete your account',
+          'read-general' => 'Read general information like purchasing categories, purchased products, selling products, selling categories, your transactions (purchases and sales)',
+      ]);
     }
 }

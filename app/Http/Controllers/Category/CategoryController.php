@@ -17,17 +17,12 @@ class CategoryController extends ApiController implements HasMiddleware
      * Display a listing of the resource.
      */
 
-    //  public function __construct(){
-
-    //     parent::__construct();
-  
-    //     $this->middleware('transaform.input:' . CategoryTransformer::class)->only(['store', 'update']);
-  
-    //   }
 
       public static function middleware(): array
       {
           return [
+              new Middleware('client.credentials', only: ['index', 'show']),
+              new middleware('auth:api', except:['index', 'show']),
               new Middleware(TransformInput::class.':'.CategoryTransformer::class, only: ['store', 'update']),
           ];
       }

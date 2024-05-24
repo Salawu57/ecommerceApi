@@ -21,6 +21,7 @@ use App\Http\Controllers\Product\ProductCategoryController;
 use App\Http\Controllers\Transaction\TransactionController;
 use App\Http\Controllers\Category\CategoryProductController;
 use App\Http\Controllers\Seller\SellerTransactionController;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\Product\ProductTransactionController;
 use App\Http\Controllers\Category\CategoryTransactionController;
 use App\Http\Controllers\Transaction\TransactionSellerController;
@@ -66,5 +67,10 @@ Route::resource('buyers.products', BuyerProductController::class)->only(['index'
 Route::resource('buyers.sellers', BuyerSellerController::class)->only(['index']);
 Route::resource('buyers.categories', BuyerCategoryController::class)->only(['index']);
 
+
+Route::get('oauth/token', [ AccessTokenController::class, 'issueToken']);
+
+Route::post('login', [ UserController::class, 'userLogin']);
+ 
 
 

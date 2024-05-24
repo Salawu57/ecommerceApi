@@ -12,6 +12,13 @@ class BuyerController extends ApiController
     /**
      * Display a listing of the resource.
      */
+    public function __construct(){ 
+
+      self::middleware();
+  
+   }
+
+      
     public function index()
     {
        $buyers = Buyer::has('transactions')->get();

@@ -6,13 +6,17 @@ use App\Http\Middleware\TransformInput;
 use Illuminate\Database\QueryException;
 use App\Http\Middleware\SignatureMiddleware;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
+use Laravel\Passport\Http\Middleware\CheckScopes;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Laravel\Passport\Http\Middleware\CheckForAnyScope;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Laravel\Passport\Http\Middleware\CheckClientCredentials;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
@@ -29,8 +33,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
            'signature' => SignatureMiddleware::class,
            'transform.input' => TransformInput::class,
+           'client.credentials' => CheckClientCredentials::class,
+           'scope' => CheckForAnyScope::class,
+           'scopes' => CheckScopes::class,
+           
         ]);
 
+       
         $middleware->web(append: [
             'signature:X-Application-Name',
         ]);
@@ -54,26 +63,30 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
 
-        $exceptions->render(function (ValidationException $e) {
+        $exceptions->render(function (ValidationException $e, Request $request) {
 
-        $errors = $e->validator->errors()->getMessages();  
+            $errors = $e->validator->errors()->getMessages();  
 
-        return response()->json(['error'=> $errors, 'code' => 422], 422);
+            if ($request->is('api/*')) {
 
+                return response()->json(['error'=> $errors, 'code' => 422], 422);
+               
+            }
+
+            return $request->ajax() ? response()->json($errors, 422) : redirect()->back()->withInput($request->input())->withErrors($errors);
+    
         });
 
 
-        // $exceptions->render(function (InvalidArgumentException $e) {
 
-           
-        //     return response()->json(['error'=> $e->getMessage(), 'code' => $e->getCode()]);
-    
-        // });
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
 
+            if ($request->is('api/*')) {
 
-        $exceptions->render(function (AuthenticationException $e) {
+                return response()->json(['error'=> 'Unauthenticated.', 'code' => 401], 401);
+            }
 
-            return response()->json(['error'=> 'Unauthenticated.', 'code' => 401], 401);
+              return redirect()->guest('login'); 
     
         });
         
@@ -89,10 +102,19 @@ return Application::configure(basePath: dirname(__DIR__))
     
         });
 
-        $exceptions->render(function (HttpException $e) {
+        $exceptions->render(function (HttpException $e, Request $request) {
 
-            return response()->json(['error'=> $e->getMessage(), 'code' => 422], 422);
-    
+            if ($request->is('api/*')) {
+                return response()->json(['error'=> $e->getMessage(), 'code' => 422], 422);
+            }
+
+            if($e->getPrevious() instanceof TokenMismatchException){
+
+               return redirect()->back()->withInput($request->input()); 
+
+            }
+
+             
         });
 
         $exceptions->render(function (QueryException $e) {

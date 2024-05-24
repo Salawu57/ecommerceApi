@@ -6,22 +6,27 @@ use App\Models\User;
 use App\Mail\UserCreated;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Transformers\UserTransformer;
 use App\Http\Controllers\ApiController;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class UserController extends ApiController
+class UserController extends ApiController implements HasMiddleware
 {
     /**
      * Display a listing of the resource.
      */
 
-    public function __construct(){
 
-      parent::__construct();
-
-      $this->middleware('transaform.input:' . UserTransformer::class)->only(['store', 'update']);
-
+    public static function middleware(): array
+    {
+        return [
+         new Middleware('client.credentials', only: ['store', 'resend']),
+         new Middleware('auth:api', except:['store', 'verify', 'resend','userLogin']),
+         new Middleware(TransformInput::class.':'. UserTransformer::class, only: ['store', 'update']),
+        ];
     }
     
 
@@ -122,6 +127,21 @@ class UserController extends ApiController
         $user->delete();
 
         return $this->showOne($user);
+    }
+
+    public function userLogin(Request $request)
+    {
+
+       $data = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:6',
+       ]);
+
+       if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']])){
+         $user = Auth::user();
+         $token = $user->createToken('Token', ['*'])->accessToken;
+         return $this->loginMessage($user, $token);
+       }
     }
 
     public function verify($token){

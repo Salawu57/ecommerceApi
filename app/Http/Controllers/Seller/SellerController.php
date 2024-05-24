@@ -9,6 +9,12 @@ use App\Http\Controllers\ApiController;
 
 class SellerController extends ApiController
 {
+
+    public function __construct(){ 
+
+        self::middleware();
+    
+     }
     /**
      * Display a listing of the resource.
      */

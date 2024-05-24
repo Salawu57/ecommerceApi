@@ -12,6 +12,12 @@ class ProductBuyerController extends ApiController
     /**
      * Display a listing of the resource.
      */
+    public function __construct(){ 
+
+        self::middleware();
+    
+     }
+     
     public function index(Product $product)
     {
        $buyers = $product->transaction()

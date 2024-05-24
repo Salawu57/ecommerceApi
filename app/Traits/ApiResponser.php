@@ -56,6 +56,18 @@ trait ApiResponser{
     
   }
 
+
+  protected function loginMessage(Model $model, $token, $code = 200){
+  
+    $transformer = $model->transformer;
+
+    $model = $this->transformData($model, $transformer);
+
+    $model['token'] = $token;
+
+    return $this->successResponse($model, $code);
+    
+  }
   
   protected function showMessage($message, $code = 200){
   
