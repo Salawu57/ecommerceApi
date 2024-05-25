@@ -58,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
 
         Passport::tokensExpireIn(now()->addMinutes(30));
         Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::personalAccessTokensExpireIn(now()->addDays(30));
        
         Passport::tokensCan([
           'purchase-product' => 'Create a new transaction for a specific product',

@@ -14,37 +14,36 @@ use App\Transformers\SellerTransformer;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Auth\Access\AuthorizationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 
 class SellerProductController extends ApiController implements HasMiddleware
-{
-
-    
-    public function __construct(){ 
-
-        self::middleware();
-    
-     }
-
-     
+{ 
     /**
      * Display a listing of the resource.
      */
+  
 
       public static function middleware(): array
       {
           return [
              new Middleware(TransformInput::class.':'. SellerTransformer::class, only: ['store', 'update']),
+             new Middleware('scope:manage-products', except:['index']),
           ];
       }
 
 
     public function index(Seller $seller)
     {
-       $products = $seller->products;
 
-       return $this->showAll($products);
+        if(request()->user()->tokenCan('read-general') || request()->user()->tokenCan('manage-products')){
+            $products = $seller->products;
+            return $this->showAll($products);
+        }
+
+        throw new AuthorizationException('No allowed');
+      
     }
 
    

@@ -21,6 +21,7 @@ class ProductCategoryController extends ApiController implements HasMiddleware
           return [
               new Middleware('client.credentials', only: ['index']),
               new Middleware('auth:api', except:['index']),
+              new Middleware('scope:manage-products', except:['index']),
           ];
       }
 

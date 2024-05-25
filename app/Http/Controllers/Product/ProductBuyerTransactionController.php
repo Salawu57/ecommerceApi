@@ -18,12 +18,6 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 class ProductBuyerTransactionController extends ApiController implements HasMiddleware
 {
 
-    public function __construct(){ 
-
-        self::middleware();
-    
-    }
-
     public static function middleware(): array
     {
         return [

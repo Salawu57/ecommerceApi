@@ -35,23 +35,23 @@ Route::get('users/verify/{token}', [ UserController::class, 'verify'])->name('ve
 Route::get('users/{user}/resend', [ UserController::class, 'resend'])->name('resend');
 
 //transaction
-Route::resource('transactions', TransactionController::class)->only(['index', 'show']);
+Route::resource('transactions', TransactionController::class)->only(['index', 'show'])->middleware(['auth:api']);
 Route::resource('transactions.categories', TransactionCategoryController::class)->only(['index']);
-Route::resource('transactions.sellers', TransactionSellerController::class)->only(['index']);
+Route::resource('transactions.sellers', TransactionSellerController::class)->only(['index'])->middleware(['auth:api']);
 
 //seller
-Route::resource('sellers', SellerController::class)->only(['index', 'show']);
-Route::resource('sellers.transactions', SellerTransactionController::class)->only(['index']);
-Route::resource('sellers.categories', SellerCategoryController::class)->only(['index']);
-Route::resource('sellers.buyers', SellerBuyerController::class)->only(['index']);
-Route::resource('sellers.products', SellerProductController::class)->except(['create','show','edit']);
+Route::resource('sellers', SellerController::class)->only(['index', 'show'])->middleware(['auth:api']);
+Route::resource('sellers.transactions', SellerTransactionController::class)->only(['index'])->middleware(['auth:api']);
+Route::resource('sellers.categories', SellerCategoryController::class)->only(['index'])->middleware(['auth:api']);
+Route::resource('sellers.buyers', SellerBuyerController::class)->only(['index'])->middleware(['auth:api']);
+Route::resource('sellers.products', SellerProductController::class)->except(['create','show','edit'])->middleware(['auth:api']);
 
 //product
 Route::resource('products', ProductController::class)->only(['index', 'show']);
 Route::resource('products.transactions', ProductTransactionController::class)->only(['index']);
 Route::resource('products.buyers', ProductBuyerController::class)->only(['index']);
 Route::resource('products.categories', ProductCategoryController::class)->only(['index','update', 'destroy']);
-Route::resource('products.buyers.transactions', ProductBuyerTransactionController::class)->only(['store']);
+Route::resource('products.buyers.transactions', ProductBuyerTransactionController::class)->only(['store'])->middleware(['auth:api']);
 
 //category
 Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
@@ -61,16 +61,17 @@ Route::resource('categories.transactions', CategoryTransactionController::class)
 Route::resource('categories.buyers', CategoryBuyerController::class)->only(['index']);
 
 //buyer
-Route::resource('buyers', BuyerController::class)->only(['index', 'show']);
-Route::resource('buyers.transactions', BuyerTransactionController::class)->only(['index']);
-Route::resource('buyers.products', BuyerProductController::class)->only(['index']);
-Route::resource('buyers.sellers', BuyerSellerController::class)->only(['index']);
-Route::resource('buyers.categories', BuyerCategoryController::class)->only(['index']);
+Route::resource('buyers', BuyerController::class)->only(['index', 'show'])->middleware(['auth:api']);
+Route::resource('buyers.transactions', BuyerTransactionController::class)->only(['index'])->middleware(['auth:api']);
+Route::resource('buyers.products', BuyerProductController::class)->only(['index'])->middleware(['auth:api']);
+Route::resource('buyers.sellers', BuyerSellerController::class)->only(['index'])->middleware(['auth:api']);
+Route::resource('buyers.categories', BuyerCategoryController::class)->only(['index'])->middleware(['auth:api']);
 
 
 Route::get('oauth/token', [ AccessTokenController::class, 'issueToken']);
 
 Route::post('login', [ UserController::class, 'userLogin']);
+Route::get('logout', [ UserController::class, 'logout']);
  
 
 

@@ -26,6 +26,7 @@ class UserController extends ApiController implements HasMiddleware
          new Middleware('client.credentials', only: ['store', 'resend']),
          new Middleware('auth:api', except:['store', 'verify', 'resend','userLogin']),
          new Middleware(TransformInput::class.':'. UserTransformer::class, only: ['store', 'update']),
+         new Middleware('scope:manage-account', only:['show','update']),
         ];
     }
     
@@ -139,10 +140,26 @@ class UserController extends ApiController implements HasMiddleware
 
        if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']])){
          $user = Auth::user();
-         $token = $user->createToken('Token', ['*'])->accessToken;
+         $token = $user->createToken('Token',['read-general'])->accessToken;
          return $this->loginMessage($user, $token);
        }
     }
+
+    public function logout(){
+
+      $user = Auth::user();
+
+      $token = $user->token();
+
+      $token->revoke();
+
+      return response()->json([
+         "status" => true,
+         "message" => "Successfully Logout"
+      ]);
+
+    }
+
 
     public function verify($token){
       $user = User::where('verification_token', $token)->firstOrFail();

@@ -10,6 +10,9 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 class ApiController extends Controller implements HasMiddleware
 {
     use ApiResponser;
+    
+
+
 
     public static function middleware(): array
     {

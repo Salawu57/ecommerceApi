@@ -6,15 +6,18 @@ use App\Models\Seller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class SellerTransactionController extends ApiController
+class SellerTransactionController extends ApiController implements HasMiddleware
 {
   
-  public function __construct(){ 
-
-    self::middleware();
-
- }
+  public static function middleware(): array
+  {
+      return [
+        new Middleware('scope:read-general', only:['index']),
+      ];
+  }
 
     /**
      * Display a listing of the resource.
