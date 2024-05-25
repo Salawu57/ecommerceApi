@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\Buyer;
 use App\Models\Product;
 use App\Mail\UserCreated;
 use App\Mail\UserMailChange;
+use App\Policies\BuyerPolicy;
 use Laravel\Passport\Passport;
 use Symfony\Component\Clock\now;
 use Illuminate\Support\Facades\Mail;
@@ -66,5 +68,9 @@ class AppServiceProvider extends ServiceProvider
           'manage-account' => 'Read your account data, id, name, email, if verified, and if admin (cannot read password). Modify your account data (email, and password). Cannot delete your account',
           'read-general' => 'Read general information like purchasing categories, purchased products, selling products, selling categories, your transactions (purchases and sales)',
       ]);
+
+
+      //Policy 
+      // Gate::policy(Buyer::class, BuyerPolicy::class);
     }
 }

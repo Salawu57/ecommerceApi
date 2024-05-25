@@ -18,6 +18,7 @@ class BuyerCategoryController extends ApiController implements HasMiddleware
     {
         return [
           new Middleware('scope:read-general', only:['index']),
+          new Middleware('can:view,buyer', only:['index']),
         ];
     }
 
