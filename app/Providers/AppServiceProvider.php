@@ -10,6 +10,8 @@ use App\Mail\UserMailChange;
 use App\Policies\BuyerPolicy;
 use Laravel\Passport\Passport;
 use Symfony\Component\Clock\now;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //Shema::defaultStringLength(191);
+
+        Gate::define('admin-action', function($user){
+          return $user->isAdmin();
+        });
 
         User::created(function($user){
           retry(5, function() use ($user){

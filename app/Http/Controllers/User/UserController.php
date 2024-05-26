@@ -27,12 +27,20 @@ class UserController extends ApiController implements HasMiddleware
          new Middleware('auth:api', except:['store', 'verify', 'resend','userLogin']),
          new Middleware(TransformInput::class.':'. UserTransformer::class, only: ['store', 'update']),
          new Middleware('scope:manage-account', only:['show','update']),
+         new Middleware('can:view,user', only:['show']),
+         new Middleware('can:update,user', only:['update']),
+         new Middleware('can:delete,user', only:['destroy']),
+
+
         ];
     }
     
 
     public function index()
     {
+
+      $this->allowedAdminAction();
+
       $users = User::all();
       return $this->showall($users);
     }
@@ -75,7 +83,7 @@ class UserController extends ApiController implements HasMiddleware
     public function update(Request $request, User $user)
     {
          
-       
+     
 
         $data = $request->validate([
             'email' => 'email|unique:users,email,'. $user->id,
@@ -99,6 +107,8 @@ class UserController extends ApiController implements HasMiddleware
          }
 
          if($request->has('admin')){
+
+            $this->allowedAdminAction();
 
             if(!$user->isVerified()){
                 return $this->errorResponse('Only verified users can modify the adnin field', 409);
@@ -140,7 +150,7 @@ class UserController extends ApiController implements HasMiddleware
 
        if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']])){
          $user = Auth::user();
-         $token = $user->createToken('Token',['read-general'])->accessToken;
+         $token = $user->createToken('Token',['manage-account'])->accessToken;
          return $this->loginMessage($user, $token);
        }
     }

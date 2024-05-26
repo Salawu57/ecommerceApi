@@ -83,10 +83,12 @@ class User extends Authenticatable
     }
 
     public function isAdmin(){
-        return $this->admin = USER::ADMIN_USER;
+        return $this->admin == USER::ADMIN_USER;
     }
 
     public static function generateVerificationCode(){
+
         return Str::random(40);
+        
     }
 }

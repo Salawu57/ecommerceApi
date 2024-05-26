@@ -30,6 +30,12 @@ class SellerProductController extends ApiController implements HasMiddleware
           return [
              new Middleware(TransformInput::class.':'. SellerTransformer::class, only: ['store', 'update']),
              new Middleware('scope:manage-products', except:['index']),
+             new Middleware('can:view,seller', only:['index']),
+             new Middleware('can:sale,seller', only:['store']),
+             new Middleware('can:edit-product,seller', only:['store']),
+             new Middleware('can:delete-product,seller', only:['destroy']),
+
+            
           ];
       }
 

@@ -22,6 +22,8 @@ class ProductCategoryController extends ApiController implements HasMiddleware
               new Middleware('client.credentials', only: ['index']),
               new Middleware('auth:api', except:['index']),
               new Middleware('scope:manage-products', except:['index']),
+              new Middleware('can:add-category,product', only:['update']),
+              new Middleware('can:delete-category,product', only:['destroy']),
           ];
       }
 

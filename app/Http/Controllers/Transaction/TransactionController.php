@@ -16,6 +16,7 @@ class TransactionController extends ApiController implements HasMiddleware
     {
         return [
           new Middleware('scope:read-general', only:['show']),
+          new Middleware('can:view,transaction', only:['show']),
         ];
     }
     
@@ -24,6 +25,8 @@ class TransactionController extends ApiController implements HasMiddleware
      */
     public function index()
     {
+        $this->allowedAdminAction(); 
+
         $transactions = Transaction::all();
 
         return $this->showAll($transactions);

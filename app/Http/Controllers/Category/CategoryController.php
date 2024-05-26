@@ -43,6 +43,8 @@ class CategoryController extends ApiController implements HasMiddleware
      */
     public function store(Request $request)
     {
+        $this->allowAdminAction();
+
         $data = $request->validate([
             'name' => 'required',
             'description' => 'required',
@@ -67,6 +69,8 @@ class CategoryController extends ApiController implements HasMiddleware
      */
     public function update(Request $request, Category $category)
     {
+        $this->allowedAdminAction();
+
        $category->fill($request->only([
         'name',
         'description'
@@ -88,6 +92,8 @@ class CategoryController extends ApiController implements HasMiddleware
      */
     public function destroy(Category $category)
     {
+        $this->allowAdminAction();
+
         $category->delete();
         return $this->showOne($category);
     }

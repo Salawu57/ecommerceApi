@@ -25,6 +25,8 @@ class BuyerController extends ApiController implements HasMiddleware
       
     public function index()
     {
+      $this->allowedAdminAction();
+
        $buyers = Buyer::has('transactions')->get();
           return $this->showall($buyers);
     }

@@ -16,6 +16,8 @@ class SellerController extends ApiController implements HasMiddleware
     {
         return [
           new Middleware('scope:read-general', only:['show']),
+          new Middleware('can:view,seller', only:['show']),
+ 
         ];
     }
     /**

@@ -16,6 +16,8 @@ class SellerTransactionController extends ApiController implements HasMiddleware
   {
       return [
         new Middleware('scope:read-general', only:['index']),
+        new Middleware('can:view,seller', only:['index']),
+    
       ];
   }
 
